@@ -1,4 +1,4 @@
-FROM python:3.12-slim-bookworm
+FROM docker.1ms.run/python:3.12-slim-bookworm
 
 ARG APT_MIRROR
 
