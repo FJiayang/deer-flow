@@ -1,12 +1,10 @@
 # Backend Development Dockerfile
 
-# UV source image (override for restricted networks)
-ARG UV_IMAGE=ghcr.nju.edu.cn/astral-sh/uv:0.7.20
-FROM ${UV_IMAGE} AS uv-source
+# UV source image
+FROM ghcr.nju.edu.cn/astral-sh/uv:0.7.20 AS uv-source
 
 # Node.js source image (copy binary instead of using nodesource apt repo)
-ARG NODE_IMAGE=docker.1ms.run/node:22-slim
-FROM ${NODE_IMAGE} AS node-source
+FROM docker.1ms.run/node:22-slim AS node-source
 
 FROM docker.1ms.run/python:3.12-slim-bookworm
 
