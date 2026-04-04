@@ -53,8 +53,9 @@ DeerFlow has newly integrated the intelligent search and crawling toolset indepe
   - [Quick Start](#quick-start)
     - [Configuration](#configuration)
     - [Running the Application](#running-the-application)
-      - [Option 1: Docker (Recommended)](#option-1-docker-recommended)
-      - [Option 2: Local Development](#option-2-local-development)
+      - [Option 1: Pre-Built Images (Recommended)](#option-1-pre-built-images-recommended)
+      - [Option 2: Docker Development (Hot-Reload)](#option-2-docker-development-hot-reload)
+      - [Option 3: Local Development](#option-3-local-development)
     - [Advanced](#advanced)
       - [Sandbox Mode](#sandbox-mode)
       - [MCP Server](#mcp-server)
@@ -209,9 +210,38 @@ That prompt is intended for coding agents. It tells the agent to clone the repo 
 
 ### Running the Application
 
-#### Option 1: Docker (Recommended)
+#### Option 1: Pre-Built Images (Recommended)
 
-**Development** (hot-reload, source mounts):
+The fastest way to get started — no local build required. Uses multi-arch images (amd64/arm64) from GitHub Container Registry.
+
+```bash
+# 1. Generate config files
+make config
+
+# 2. Edit config.yaml — configure at least one model and API key
+# 3. Edit .env — set your API keys (OPENAI_API_KEY, TAVILY_API_KEY, etc.)
+
+# 4. Start all services
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop
+docker compose down
+```
+
+Pin a specific version instead of `latest`:
+
+```bash
+DEER_FLOW_VERSION=v1.0.0 docker compose up -d
+```
+
+Access: http://localhost:2026
+
+#### Option 2: Docker Development (Hot-Reload)
+
+Build images locally with source mounts for live development:
 
 ```bash
 make docker-init    # Pull sandbox image (only once or when image updates)
@@ -241,7 +271,7 @@ Access: http://localhost:2026
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed Docker development guide.
 
-#### Option 2: Local Development
+#### Option 3: Local Development
 
 If you prefer running services locally:
 
