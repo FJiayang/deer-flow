@@ -40,8 +40,9 @@ https://github.com/user-attachments/assets/a8bcadc4-e040-4cf2-8fda-dd768b999c18
   - [快速开始](#快速开始)
     - [配置](#配置)
     - [运行应用](#运行应用)
-      - [方式一：Docker（推荐）](#方式一docker推荐)
-      - [方式二：本地开发](#方式二本地开发)
+      - [方式一：预构建镜像（推荐）](#方式一预构建镜像推荐)
+      - [方式二：Docker 开发（热更新）](#方式二docker-开发热更新)
+      - [方式三：本地开发](#方式三本地开发)
     - [进阶配置](#进阶配置)
       - [Sandbox 模式](#sandbox-模式)
       - [MCP Server](#mcp-server)
@@ -150,9 +151,38 @@ https://github.com/user-attachments/assets/a8bcadc4-e040-4cf2-8fda-dd768b999c18
 
 ### 运行应用
 
-#### 方式一：Docker（推荐）
+#### 方式一：预构建镜像（推荐）
 
-**开发模式**（支持热更新，挂载源码）：
+最快的启动方式 — 无需本地构建。使用 GitHub Container Registry 上的多架构镜像（amd64/arm64）。
+
+```bash
+# 1. 生成配置文件
+make config
+
+# 2. 编辑 config.yaml — 至少配置一个模型及其 API key
+# 3. 编辑 .env — 设置 API key（OPENAI_API_KEY、TAVILY_API_KEY 等）
+
+# 4. 启动所有服务
+docker compose up -d
+
+# 查看日志
+docker compose logs -f
+
+# 停止
+docker compose down
+```
+
+指定版本而非 `latest`：
+
+```bash
+DEER_FLOW_VERSION=v1.0.0 docker compose up -d
+```
+
+访问地址：http://localhost:2026
+
+#### 方式二：Docker 开发（热更新）
+
+本地构建镜像，挂载源码实现热更新开发：
 
 ```bash
 make docker-init    # 拉取 sandbox 镜像（首次运行或镜像更新时执行）
@@ -175,7 +205,7 @@ make down   # 停止并移除容器
 
 更完整的 Docker 开发说明见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
-#### 方式二：本地开发
+#### 方式三：本地开发
 
 如果你更希望直接在本地启动各个服务：
 

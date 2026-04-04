@@ -52,8 +52,9 @@ DeerFlow intègre désormais le toolkit de recherche et de crawling intelligent 
   - [Démarrage rapide](#démarrage-rapide)
     - [Configuration](#configuration)
     - [Lancer l'application](#lancer-lapplication)
-      - [Option 1 : Docker (recommandé)](#option-1--docker-recommandé)
-      - [Option 2 : Développement local](#option-2--développement-local)
+      - [Option 1 : Images pré-compilées (recommandé)](#option-1--images-pré-compilées-recommandé)
+      - [Option 2 : Développement Docker (hot-reload)](#option-2--développement-docker-hot-reload)
+      - [Option 3 : Développement local](#option-3--développement-local)
     - [Avancé](#avancé)
       - [Mode Sandbox](#mode-sandbox)
       - [Serveur MCP](#serveur-mcp)
@@ -205,17 +206,45 @@ Ce prompt est destiné aux coding agents. Il leur demande de cloner le dépôt s
 
 ### Lancer l'application
 
-#### Option 1 : Docker (recommandé)
+#### Option 1 : Images pré-compilées (recommandé)
 
-**Développement** (hot-reload, montage des sources) :
+Le moyen le plus rapide de démarrer — aucune compilation locale requise. Utilise des images multi-architecture (amd64/arm64) depuis GitHub Container Registry.
 
 ```bash
-make docker-init    # Pull sandbox image (only once or when image updates)
-make docker-start   # Start services (auto-detects sandbox mode from config.yaml)
+# 1. Générer les fichiers de configuration
+make config
+
+# 2. Modifier config.yaml — configurer au moins un modèle et sa clé API
+# 3. Modifier .env — définir les clés API (OPENAI_API_KEY, TAVILY_API_KEY, etc.)
+
+# 4. Démarrer tous les services
+docker compose up -d
+
+# Voir les logs
+docker compose logs -f
+
+# Arrêter
+docker compose down
+```
+
+Épingler une version spécifique au lieu de `latest` :
+
+```bash
+DEER_FLOW_VERSION=v1.0.0 docker compose up -d
+```
+
+Accès : http://localhost:2026
+
+#### Option 2 : Développement Docker (hot-reload)
+
+Compiler les images localement avec montage des sources pour le développement en temps réel :
+
+```bash
+make docker-init    # Télécharger l'image sandbox (une seule fois ou lors de mises à jour)
+make docker-start   # Démarrer les services (détecte automatiquement le mode sandbox depuis config.yaml)
 ```
 
 `make docker-start` ne lance `provisioner` que si `config.yaml` utilise le mode provisioner (`sandbox.use: deerflow.community.aio_sandbox:AioSandboxProvider` avec `provisioner_url`).
-Les processus backend récupèrent automatiquement les changements dans `config.yaml` au prochain accès à la configuration, donc les mises à jour de métadonnées des modèles ne nécessitent pas de redémarrage manuel en développement.
 
 > [!TIP]
 > Sous Linux, si les commandes Docker échouent avec `permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock`, ajoutez votre utilisateur au groupe `docker` et reconnectez-vous avant de réessayer. Voir [CONTRIBUTING.md](CONTRIBUTING.md#linux-docker-daemon-permission-denied) pour la solution complète.
@@ -223,8 +252,8 @@ Les processus backend récupèrent automatiquement les changements dans `config.
 **Production** (build des images en local, montage de la config et des données) :
 
 ```bash
-make up     # Build images and start all production services
-make down   # Stop and remove containers
+make up     # Compiler les images et démarrer tous les services de production
+make down   # Arrêter et supprimer les conteneurs
 ```
 
 > [!NOTE]
@@ -234,7 +263,7 @@ Accès : http://localhost:2026
 
 Voir [CONTRIBUTING.md](CONTRIBUTING.md) pour le guide complet de développement avec Docker.
 
-#### Option 2 : Développement local
+#### Option 3 : Développement local
 
 Si vous préférez lancer les services en local :
 
