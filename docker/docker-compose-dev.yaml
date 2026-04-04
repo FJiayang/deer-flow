@@ -24,6 +24,7 @@ services:
     build:
       context: ./provisioner
       dockerfile: Dockerfile
+      args:
     container_name: deer-flow-provisioner
     volumes:
       - ~/.kube/config:/root/.kube/config:ro
