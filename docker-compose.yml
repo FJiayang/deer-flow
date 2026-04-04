@@ -72,7 +72,7 @@ services:
   gateway:
     <<: *backend-image
     container_name: deer-flow-gateway
-    command: sh -c "cd backend && PYTHONPATH=. uv run uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
+    command: sh -c "cd backend && PYTHONPATH=. uv run --frozen uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
     volumes: *backend-volumes
     working_dir: /app
     environment:

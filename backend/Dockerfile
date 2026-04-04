@@ -41,12 +41,12 @@ WORKDIR /app
 # Copy frontend source code
 COPY backend ./backend
 
-# Install dependencies with cache mount
+# Install dependencies with frozen lockfile (no runtime resolution needed)
 RUN --mount=type=cache,target=/root/.cache/uv \
-    sh -c "cd backend && UV_INDEX_URL=${UV_INDEX_URL:-https://pypi.org/simple} uv sync"
+    sh -c "cd backend && UV_INDEX_URL=${UV_INDEX_URL:-https://pypi.org/simple} uv sync --frozen"
 
 # Expose ports (gateway: 8001, langgraph: 2024)
 EXPOSE 8001 2024
 
 # Default command (can be overridden in docker-compose)
-CMD ["sh", "-c", "cd backend && PYTHONPATH=. uv run uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001"]
+CMD ["sh", "-c", "cd backend && PYTHONPATH=. uv run --frozen uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001"]
