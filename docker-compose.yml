@@ -72,7 +72,7 @@ services:
   gateway:
     <<: *backend-image
     container_name: deer-flow-gateway
-    command: sh -c "cd backend && PYTHONPATH=. uv run --frozen uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
+    command: sh -c "cd backend && PYTHONPATH=. uv run --no-sync uvicorn app.gateway.app:app --host 0.0.0.0 --port 8001 --workers 2"
     volumes: *backend-volumes
     working_dir: /app
     environment:
@@ -93,7 +93,7 @@ services:
   langgraph:
     <<: *backend-image
     container_name: deer-flow-langgraph
-    command: sh -c "cd /app/backend && uv run --frozen langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024 --n-jobs-per-worker 10"
+    command: sh -c "cd /app/backend && uv run --no-sync langgraph dev --no-browser --allow-blocking --no-reload --host 0.0.0.0 --port 2024 --n-jobs-per-worker 10"
     volumes:
       - ./config.yaml:/app/backend/config.yaml:ro
       - ./extensions_config.json:/app/backend/extensions_config.json:ro
