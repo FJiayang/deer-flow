@@ -8,8 +8,6 @@ FROM docker.1ms.run/node:22-slim AS node-source
 
 FROM docker.1ms.run/python:3.12-slim-bookworm
 
-ARG UV_INDEX_URL
-
 # Use China apt mirror
 RUN sed -i "s|deb.debian.org|mirrors.aliyun.com|g" /etc/apt/sources.list.d/debian.sources 2>/dev/null || true; \
     sed -i "s|deb.debian.org|mirrors.aliyun.com|g" /etc/apt/sources.list 2>/dev/null || true
@@ -43,7 +41,7 @@ COPY backend ./backend
 
 # Install dependencies with cache mount
 RUN --mount=type=cache,target=/root/.cache/uv \
-    sh -c "cd backend && UV_INDEX_URL=${UV_INDEX_URL:-https://pypi.org/simple} uv sync"
+    sh -c "cd backend && UV_INDEX_URL=https://mirrors.aliyun.com/pypi/simple uv sync"
 
 # Expose ports (gateway: 8001, langgraph: 2024)
 EXPOSE 8001 2024
